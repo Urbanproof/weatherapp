@@ -21,8 +21,8 @@
     "docker:run-dev": "docker run --init --rm -d -p $npm_package_config_port:$npm_package_config_port -v $(pwd)/src:/usr/app/src --env-file .env --name $npm_package_config_name $npm_package_config_name"
   },
   "dependencies": {
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0"
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
