@@ -1,3 +1,95 @@
+# Usage instructions
+
+
+## Prerequisites
+
+- Required
+    - Docker 17.05 or higher
+    - Internet access
+    - An [openweathermap](http://openweathermap.org/) API key
+- Useful
+    - Git (not necessary if you donwload the archive version of this repository)
+    - Node version 8.2.0 or later & npm version 5.2.0 or later to run helper scripts
+    (ofc if you can use Node directly, one could argue that there is no point to run docker in the first place)
+
+Limitations above are not guaranteed to be correct, but rather checked from API-limitations (ie. npx command is only available on npm 5.2.0 or later etc.). Every command should be cross platform compatible, but due to severe hardware limitations this project is only tested on:
+- Ubuntu 18.04.5 LTS
+    - Running in WSL2 VM with Windows 10 build 19042
+- Docker Desktop v2.4.0.0
+    - Docker version 19.03.13
+    - docker-compose version 1.27.4
+    - WSL2 Backend
+- Node version 12.18.4
+- npm version 6.14.8
+
+
+## Setting up the environment
+
+Both frontend and backend somewhat depend from the environment. Most of the environment variables have sensible defaults, but provide at minimun:
+- backend: the OpenWeather API-key
+- frontend: backend hostname
+    - this should be the reachable hostname of your docker host, not the docker network internal one, as the request is done in the browser
+    - running locally http://localhost:9000/api should work given that you haven't changed the default port
+
+There are two possible ways to inject environment variables to containers;
+- add .env -file to service directory (there are .env.example files for your convenience)
+    - simply copy&paste the .example file, rename to .env and fill in the data
+- inject variables yourself, either with custom docker commands, customizing the docker-compose file, from the command line...
+    - even in this case, check out the .env.example files for required variables
+
+
+## Starting the services
+
+
+### Using docker-compose
+
+Simply run `docker-compose up -d` in project root directory. Note that this way containers are built & started using _development_ configuration.
+There is no docker-compose file provided for production deployment because you probably shouldn't be using docker-compose for that.
+
+
+### Using docker commands
+
+Run following commands against corresponding service's root directory, ie. before running backend-commands, run `cd backend`.
+
+
+#### Backend
+
+1. Using npm helper scripts:
+    - `npm run docker` - builds & starts the container
+    - `npm run docker-dev` - builds & starts the container for development
+    - `npm run docker:stop` - stops & removes the container
+    - `npm run docker:build` - builds the container
+    - `npm run docker:build-dev` - builds the container for development
+    - `npm run docker:run` - starts the container
+    - `npm run docker:run-dev` - starts the container for development
+2. Using docker commands directly
+    - build for production: `docker build -t weatherapp_backend .`
+    - build for development: `docker build -t weatherapp_backend --target=dev-stage .`
+    - run in production: `docker run --rm -d -p 9000:9000 --env-file .env --name weatherapp_backend weatherapp_backend`
+        - note thath you must build the image for production before running this
+    - run in development: `docker run --init --rm -d -p 9000:9000 -v $(pwd)/src:/usr/app/src --env-file .env --name weatherapp_backend weatherapp_backend`
+        - note thath you must build the image for development before running this
+
+#### Frontend
+
+Frontend has no production configuration, so only development commands are available.
+
+1. Using npm helper scripts:
+    - `npm run docker-dev` - builds & starts the container for development
+    - `npm run docker:stop` - stops & removes the container
+    - `npm run docker:build-dev` - builds the container for development
+    - `npm run docker:run-dev` - starts the container for development
+2. Using docker commands directly
+    - build for development: `docker build -t weatherapp_frontend --build-arg PORT=8000 --target=dev-stage .`
+    - run in development: `docker run --init --rm -d -p 8000:8000 -v $(pwd)/src:/usr/app/src --env-file .env --name weatherapp_frontend weatherapp_frontend`
+
+
+---
+Original documentation below.
+
+---
+
+
 # Weatherapp
 
 There was a beautiful idea of building an app that would show the upcoming weather. The developers wrote a nice backend and a frontend following the latest principles and - to be honest - bells and whistles. However, the developers did not remember to add any information about the infrastructure or even setup instructions in the source code.
@@ -82,7 +174,7 @@ Here are some things in different categories that you can do to make the app bet
 
 * The app must be ready to deploy and work flawlessly.
 
-* The app must be easy to deploy to your local machine with and without Docker. 
+* The app must be easy to deploy to your local machine with and without Docker.
 
 * Detailed instructions to run the app should be included in your forked version because a customer would expect detailed instructions also.
 
