@@ -4,6 +4,8 @@
 
 # Setup some common things
 FROM node:12 as base-stage
+RUN mkdir -p /usr/app
+RUN chown node:node /usr/app
 USER node
 WORKDIR /usr/app
 COPY --chown=node:node package*.json ./
@@ -15,5 +17,5 @@ ARG PORT=80
 ENV NODE_ENV=development
 ENV PORT=$PORT
 EXPOSE $PORT
-RUN npm install && npm cache clean --force
+RUN npm install --no-optional && npm cache clean --force
 CMD ["npm","start"]

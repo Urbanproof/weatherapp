@@ -17,7 +17,7 @@
     "lint": "node_modules/.bin/eslint --ext .js --ext .jsx .",
     "docker-dev": "npx npm-run-all -s docker:stop docker:build-dev docker:run-dev",
     "docker:stop": "docker stop $npm_package_config_name || true && docker rm $npm_package_config_name || true",
-    "docker:build-dev": "npx env-cmd --no-override -f .env docker build -t $npm_package_config_name --build-arg PORT=$npm_package_config_port --target=dev-stage .",
+    "docker:build-dev": "docker build -t $npm_package_config_name --build-arg PORT=$npm_package_config_port --target=dev-stage .",
     "docker:run-dev": "docker run --init --rm -d -p $npm_package_config_port:$npm_package_config_port -v $(pwd)/src:/usr/app/src --env-file .env --name $npm_package_config_name $npm_package_config_name"
   },
   "dependencies": {
