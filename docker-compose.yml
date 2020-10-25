@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: dev-stage
+    volumes:
+      - ./backend/src:/usr/app/src:ro
+    init: true
+    env_file: ./backend/.env
+    container_name: weatherapp_backend
+    ports:
+      - "9000:9000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev-stage
+      args:
+        PORT: 8000
+    volumes:
+      - ./frontend/src:/usr/app/src
+    init: true
+    env_file: ./frontend/.env
+    container_name: weatherapp_frontend
+    ports:
+      # ! If you decide to change this, note the following:
+      # * Webpack HMR socket breaks if you choose a different host port
+      # * --> make sure to use mathing ports
+      # * Container port must match the build arg port
+      # * --> remember to update the build arg "PORT" too
+      # * Finally, you must rebuild the image. Run docker-compose with --build flag
+      - "8000:8000"
