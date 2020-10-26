@@ -46,6 +46,8 @@ There are two possible ways to inject environment variables to containers;
 Simply run `docker-compose up -d` in project root directory. Note that this way containers are built & started using _development_ configuration.
 There is no docker-compose file provided for production deployment because you probably shouldn't be using docker-compose for that.
 
+If you want to rebuild images, just run the command above with additional flag `--build`.
+
 
 ### Using docker commands
 
@@ -64,10 +66,10 @@ Run following commands against corresponding service's root directory, ie. befor
     - `npm run docker:run-dev` - starts the container for development
 2. Using docker commands directly
     - build for production: `docker build -t weatherapp_backend .`
-    - build for development: `docker build -t weatherapp_backend --target=dev-stage .`
+    - build for development: `docker build -t weatherapp_backend:dev --target=dev-stage .`
     - run in production: `docker run --rm -d -p 9000:9000 --env-file .env --name weatherapp_backend weatherapp_backend`
         - note thath you must build the image for production before running this
-    - run in development: `docker run --init --rm -d -p 9000:9000 -v $(pwd)/src:/usr/app/src --env-file .env --name weatherapp_backend weatherapp_backend`
+    - run in development: `docker run --init --rm -d -p 9000:9000 -v $(pwd)/src:/usr/app/src --env-file .env --name weatherapp_backend weatherapp_backend:dev`
         - note thath you must build the image for development before running this
 
 #### Frontend
@@ -75,13 +77,20 @@ Run following commands against corresponding service's root directory, ie. befor
 Frontend has no production configuration, so only development commands are available.
 
 1. Using npm helper scripts:
+    - `npm run docker` - builds & starts the container
     - `npm run docker-dev` - builds & starts the container for development
     - `npm run docker:stop` - stops & removes the container
+    - `npm run docker:build` - builds the container
     - `npm run docker:build-dev` - builds the container for development
+    - `npm run docker:run` - starts the container
     - `npm run docker:run-dev` - starts the container for development
+    - you can control the environment by changing the config-object values under package.json
 2. Using docker commands directly
-    - build for development: `docker build -t weatherapp_frontend --build-arg PORT=8000 --target=dev-stage .`
-    - run in development: `docker run --init --rm -d -p 8000:8000 -v $(pwd)/src:/usr/app/src --env-file .env --name weatherapp_frontend weatherapp_frontend`
+    - build for production: `docker build -t weatherapp_frontend  --build-arg WEATHERAPI_ENDPOINT=http://localhost:9000/api --target=dev-stage .`
+        - WEATHERAPI_ENDPOINT controls the Weather API endpoint Webpack emits during build, change this to your backend hostname
+    - build for development: `docker build -t weatherapp_frontend:dev --build-arg PORT=8000 --target=dev-stage .`
+    - run in production: `docker run --rm -d -p 80:80 --name weatherapp_frontend weatherapp_frontend`
+    - run in development: `docker run --init --rm -d -p 8000:8000 -v $(pwd)/src:/usr/app/src --env-file .env --name weatherapp_frontend weatherapp_frontend:dev`
 
 
 ---

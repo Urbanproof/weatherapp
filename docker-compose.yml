@@ -2,6 +2,7 @@ version: "3.8"
 services:
 
   backend:
+    image: weatherapp_backend:dev
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -15,6 +16,7 @@ services:
       - "9000:9000"
 
   frontend:
+    image: weatherapp_frontend:dev
     build:
       context: ./frontend
       dockerfile: Dockerfile
