@@ -11,7 +11,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "DEBUG=weathermap ./node_modules/.bin/nodemon src/index.js",
-    "lint": "eslint src/*.js",
+    "lint": "./node_modules/.bin/eslint src/*.js",
     "docker": "npx npm-run-all -s docker:stop docker:build docker:run",
     "docker-dev": "npx npm-run-all -s docker:stop docker:build-dev docker:run-dev",
     "docker:stop": "docker stop $npm_package_config_name || true && docker rm $npm_package_config_name || true",
