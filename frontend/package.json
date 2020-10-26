@@ -10,19 +10,20 @@
   "license": "UNLICENSED",
   "config": {
     "name": "weatherapp_frontend",
-    "port": 8000
+    "port": 8000,
+    "endpoint": "http://localhost:9000/api"
   },
   "scripts": {
-    "start": "node_modules/.bin/cross-env NODE_ENV=development node_modules/.bin/webpack-dev-server --config webpack.config.js --progress --inline --colors",
-    "build": "node_modules/.bin/cross-env NODE_ENV=production node_modules/.bin/webpack --config webpack.config.js --progress --color",
+    "start": "node_modules/.bin/webpack serve --config webpack.config.js --progress --inline --color",
+    "build": "node_modules/.bin/webpack --config webpack.config.js --progress --color",
     "lint": "node_modules/.bin/eslint --ext .js --ext .jsx .",
     "docker": "npx npm-run-all -s docker:stop docker:build docker:run",
     "docker-dev": "npx npm-run-all -s docker:stop docker:build-dev docker:run-dev",
     "docker:stop": "docker stop $npm_package_config_name || true && docker rm $npm_package_config_name || true",
-    "docker:build": "docker build -t $npm_package_config_name .",
-    "docker:build-dev": "docker build -t $npm_package_config_name --build-arg PORT=$npm_package_config_port --target=dev-stage .",
-    "docker:run": "docker run --rm -d -p 80:80 --env-file .env --name $npm_package_config_name $npm_package_config_name",
-    "docker:run-dev": "docker run --init --rm -d -p $npm_package_config_port:$npm_package_config_port -v $(pwd)/src:/usr/app/src --env-file .env --name $npm_package_config_name $npm_package_config_name"
+    "docker:build": "docker build -t $npm_package_config_name --build-arg WEATHERAPI_ENDPOINT=$npm_package_config_endpoint .",
+    "docker:build-dev": "docker build -t $npm_package_config_name:dev --build-arg PORT=$npm_package_config_port --target=dev-stage .",
+    "docker:run": "docker run --rm -d -p 80:80 --name $npm_package_config_name $npm_package_config_name",
+    "docker:run-dev": "docker run --init --rm -d -p $npm_package_config_port:$npm_package_config_port -v $(pwd)/src:/usr/app/src --env-file .env --name $npm_package_config_name $npm_package_config_name:dev"
   },
   "dependencies": {
     "react": "^17.0.1",

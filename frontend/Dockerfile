@@ -21,7 +21,9 @@ CMD ["npm","start"]
 
 # Install prod-only stuff
 FROM base-stage as build-stage
+ARG WEATHERAPI_ENDPOINT
 ENV NODE_ENV=production
+ENV ENDPOINT=$WEATHERAPI_ENDPOINT
 COPY --chown=node:node ./src /usr/app/src
 # Linting & aborting on lint errors might actually be a good idea.
 # Maybe out of scope for now.
@@ -29,7 +31,8 @@ RUN npm run build
 
 # And copy necessary stuff to nginx alpine image
 FROM nginx:stable-alpine
+# Silence entrypoint nags caused by custom config. Disable for debugging.
+ENV NGINX_ENTRYPOINT_QUIET_LOGS=1
 EXPOSE 80
 COPY --from=build-stage /usr/app/dist /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-CMD ["nginx", "-g", "daemon off;"]
