@@ -2,6 +2,7 @@ version: "3.8"
 services:
 
   backend:
+    image: weatherapp_backend:dev
     build:
       context: ./backend
       dockerfile: Dockerfile

@@ -16,9 +16,9 @@
     "docker-dev": "npx npm-run-all -s docker:stop docker:build-dev docker:run-dev",
     "docker:stop": "docker stop $npm_package_config_name || true && docker rm $npm_package_config_name || true",
     "docker:build": "docker build -t $npm_package_config_name .",
-    "docker:build-dev": "docker build -t $npm_package_config_name --target=dev-stage .",
+    "docker:build-dev": "docker build -t $npm_package_config_name:dev --target=dev-stage .",
     "docker:run": "docker run --rm -d -p $npm_package_config_localPort:9000 --env-file .env --name $npm_package_config_name $npm_package_config_name",
-    "docker:run-dev": "docker run --init --rm -d -p $npm_package_config_localPort:9000 -v $(pwd)/src:/usr/app/src --env-file .env --name $npm_package_config_name $npm_package_config_name npm run dev"
+    "docker:run-dev": "docker run --init --rm -d -p $npm_package_config_localPort:9000 -v $(pwd)/src:/usr/app/src --env-file .env --name $npm_package_config_name $npm_package_config_name:dev"
   },
   "dependencies": {
     "debug": "^4.2.0",

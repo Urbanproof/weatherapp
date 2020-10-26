@@ -66,10 +66,10 @@ Run following commands against corresponding service's root directory, ie. befor
     - `npm run docker:run-dev` - starts the container for development
 2. Using docker commands directly
     - build for production: `docker build -t weatherapp_backend .`
-    - build for development: `docker build -t weatherapp_backend --target=dev-stage .`
+    - build for development: `docker build -t weatherapp_backend:dev --target=dev-stage .`
     - run in production: `docker run --rm -d -p 9000:9000 --env-file .env --name weatherapp_backend weatherapp_backend`
         - note thath you must build the image for production before running this
-    - run in development: `docker run --init --rm -d -p 9000:9000 -v $(pwd)/src:/usr/app/src --env-file .env --name weatherapp_backend weatherapp_backend`
+    - run in development: `docker run --init --rm -d -p 9000:9000 -v $(pwd)/src:/usr/app/src --env-file .env --name weatherapp_backend weatherapp_backend:dev`
         - note thath you must build the image for development before running this
 
 #### Frontend
