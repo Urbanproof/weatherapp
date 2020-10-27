@@ -20,6 +20,7 @@ const devConfig = {
     disableHostCheck: true,
     host: process.env.HOST || '0.0.0.0',
     port: process.env.PORT || 8000,
+    https: true,
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
