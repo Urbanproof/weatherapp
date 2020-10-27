@@ -92,7 +92,7 @@ Frontend has no production configuration, so only development commands are avail
     - run in production: `docker run --rm -d -p 80:80 --name weatherapp_frontend weatherapp_frontend`
     - run in development: `docker run --init --rm -d -p 8000:8000 -v $(pwd)/src:/usr/app/src --env-file .env --name weatherapp_frontend weatherapp_frontend:dev`
 
-
+Note: Frontend is available only through HTTPS on development mode due to geolocation API limitations, but your browser migh complain about self signed certificate. This certificate error is safe to ignore.
 ---
 Original documentation below.
 

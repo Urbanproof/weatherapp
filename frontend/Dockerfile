@@ -8,7 +8,7 @@ COPY --chown=node:node package*.json ./
 COPY --chown=node:node webpack.config.js ./webpack.config.js
 RUN npm set progress=false \
     && npm config set depth 0 \
-    && npm install  --no-optional \
+    && npm ci --no-optional \
     && npm cache clean --force
 
 # Install dev-only stuff
@@ -25,9 +25,8 @@ ARG WEATHERAPI_ENDPOINT
 ENV NODE_ENV=production
 ENV ENDPOINT=$WEATHERAPI_ENDPOINT
 COPY --chown=node:node ./src /usr/app/src
-# Linting & aborting on lint errors might actually be a good idea.
-# Maybe out of scope for now.
-RUN npm run build
+COPY --chown=node:node ./.eslintrc /usr/app/.eslintrc
+RUN npm run lint && npm run build
 
 # And copy necessary stuff to nginx alpine image
 FROM nginx:stable-alpine
