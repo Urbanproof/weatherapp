@@ -3,9 +3,13 @@ import ReactDOM from 'react-dom';
 
 const baseURL = process.env.ENDPOINT;
 
-const getWeatherFromApi = async () => {
+const getWeatherFromApi = async (position) => {
   try {
-    const response = await fetch(`${baseURL}/weather`);
+    let url = `${baseURL}/weather`;
+    if (position instanceof window.GeolocationPosition) {
+      url += `?lat=${encodeURIComponent(position.coords.latitude)}&lon=${encodeURIComponent(position.coords.longitude)}`;
+    }
+    const response = await fetch(url);
     return response.json();
   } catch (error) {
     /**
@@ -19,6 +23,15 @@ const getWeatherFromApi = async () => {
   }
 
   return {};
+};
+
+const getLocation = () => {
+  if (!navigator.geolocation) {
+    return Promise.reject();
+  }
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
 };
 
 class Weather extends React.Component {
