@@ -8,7 +8,14 @@ const getWeatherFromApi = async () => {
     const response = await fetch(`${baseURL}/weather`);
     return response.json();
   } catch (error) {
-    console.error(error);
+    /**
+     * Maybe we can add GCP logging later on?
+     * This should be okay for now.
+     */
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
   }
 
   return {};
@@ -19,21 +26,28 @@ class Weather extends React.Component {
     super(props);
 
     this.state = {
-      icon: "",
+      icon: '',
+      description: '',
     };
   }
 
   async componentDidMount() {
-    const weather = await getWeatherFromApi();
-    this.setState({icon: weather.icon.slice(0, -1)});
+    const {
+      icon = '',
+      description = '',
+    } = await getWeatherFromApi();
+    this.setState({
+      icon: icon.slice(0, -1),
+      description,
+    });
   }
 
   render() {
-    const { icon } = this.state;
+    const { icon, description } = this.state;
 
     return (
       <div className="icon">
-        { icon && <img src={`/img/${icon}.svg`} /> }
+        { icon && <img src={`/img/${icon}.svg`} alt={`Weather in 3 hours: ${description ?? ''}`} /> }
       </div>
     );
   }
@@ -41,5 +55,5 @@ class Weather extends React.Component {
 
 ReactDOM.render(
   <Weather />,
-  document.getElementById('app')
+  document.getElementById('app'),
 );
