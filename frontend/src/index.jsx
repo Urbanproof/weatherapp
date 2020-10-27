@@ -41,27 +41,50 @@ class Weather extends React.Component {
     this.state = {
       icon: '',
       description: '',
+      hasGeolocation: false,
     };
   }
 
   async componentDidMount() {
+    let location = null;
+    let hasGeolocation = false;
+    try {
+      location = await getLocation();
+      hasGeolocation = true;
+    } catch (error) {
+      // Same story here, GCP logging would be nice addition
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.error(`Failed to use geolocation. Error: ${error}`);
+      }
+    }
     const {
       icon = '',
       description = '',
-    } = await getWeatherFromApi();
+    } = await getWeatherFromApi(location);
     this.setState({
       icon: icon.slice(0, -1),
       description,
+      hasGeolocation,
     });
   }
 
   render() {
-    const { icon, description } = this.state;
+    const { icon, description, hasGeolocation } = this.state;
 
     return (
-      <div className="icon">
-        { icon && <img src={`/img/${icon}.svg`} alt={`Weather in 3 hours: ${description ?? ''}`} /> }
-      </div>
+      <figure className="icon">
+        {
+          icon
+            ? <img src={`/img/${icon}.svg`} alt={`Weather in 3 hours: ${description ?? ''}`} />
+            : <div className="loading-icon" />
+        }
+        { description && <figcaption>{ description }</figcaption> }
+        {
+          !hasGeolocation && icon
+          && <p>Warging: without location access this data might be unaccurate.</p>
+        }
+      </figure>
     );
   }
 }

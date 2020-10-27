@@ -6,9 +6,53 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .icon {
   width: 30vw;
-  height: 30vw;
+  min-width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.icon > * {
+  text-align: center;
+  margin: 1em;
+}
+
+.loading-icon {
+  display: inline-block;
+}
+
+.loading-icon:before {
+  content: "Loading...";
+  color: lightgray;
+  font-style: italic;
+  margin-bottom: 1em;
+  text-align: center;
+  display: block;
+}
+
+.loading-icon:after {
+  content: " ";
+  display: block;
+  width: 7rem;
+  height: 7rem;
+  margin: 8px;
+  border-radius: 50%;
+  border: 0.5em solid #555;
+  border-color: #555 transparent #555 transparent;
+  animation: loader 1.2s linear infinite;
+}
+
+@keyframes loader {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
