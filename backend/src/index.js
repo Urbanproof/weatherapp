@@ -15,15 +15,46 @@ const app = new Koa();
 
 app.use(cors(),);
 
-const fetchWeather = async () => {
-  const endpoint = `${mapURI}/forecast?q=${targetCity}&appid=${appId}&`;
+const notEmptyStr = (str,) => {
+  if (typeof str !== 'string') {
+    return false;
+  }
+  return str.length > 0;
+};
+
+const queryString = (params,) => {
+  if (typeof params !== 'object') {
+    throw new TypeError('Object expected.',);
+  }
+  return Object.keys(params,).filter((key,) => {
+    // Strip inherited properties, like prototype properties
+    return Object.prototype.hasOwnProperty.call(params, key,);
+  },).map((key,) => {
+    // transforms object key-value pair to string key=value
+    return `${encodeURIComponent(key,)}=${encodeURIComponent(params[key],)}`;
+  },).join('&',);
+};
+
+const fetchWeather = async ({ lat = null, lon = null, },) => {
+  const baseUri = `${mapURI}/forecast`;
+  const params = {
+    appid: appId,
+  };
+  if (notEmptyStr(lat,) && notEmptyStr(lon,)) {
+    params.lat = lat;
+    params.lon = lon;
+  } else {
+    params.q = targetCity;
+  }
+  const endpoint = `${baseUri}?${queryString(params,)}`;
+  debug(endpoint,);
   const response = await fetch(endpoint,);
 
   return response ? response.json() : {};
 };
 
 router.get('/api/weather', async (ctx,) => {
-  const weatherData = await fetchWeather();
+  const weatherData = await fetchWeather(ctx.request.query,);
 
   ctx.type = 'application/json; charset=utf-8';
   ctx.body = weatherData.list ? weatherData.list[0].weather[0] : {};
